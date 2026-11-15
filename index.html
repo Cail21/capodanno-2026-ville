@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Capodanno 2026 — Tour 3D delle 6 Ville</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --border: rgba(255, 255, 255, 0.14);
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.18);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0f172a;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Selector Strip */
+    .topbar {
+      position: relative;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 10px;
+      flex-shrink: 0;
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+    .brand-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .brand-badge {
+      background: var(--accent);
+      color: #111827;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .top-actions {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .icon-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      color: #f1f5f9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .icon-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #fde68a;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: 0 0 auto;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 9px;
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    }
+
+    /* 3D Stage */
+    .stage {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 35%, #e0f2fe 0%, #bfdbfe 45%, #94a3b8 100%);
+      --poster-color: transparent;
+    }
+
+    .progress-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .progress-wrap.hide { opacity: 0; }
+    .spinner {
+      width: 34px;
+      height: 34px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Camera Presets Floating Bar */
+    .cam-bar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      display: flex;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(8px);
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .cam-btn {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .cam-btn.active {
+      background: rgba(255,255,255,0.20);
+      color: #fff;
+    }
+
+    /* Compact Pin Hotspots on 3D Model */
+    .hotspot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.88);
+      color: #fde68a;
+      border: 2px solid #f59e0b;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.40);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      padding: 0;
+    }
+    .hide-hotspots .hotspot {
+      display: none !important;
+    }
+
+    /* Tappable Zone Focus Strip over Bottom Edge of 3D Stage */
+    .zone-strip {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 6;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-right: 92px; /* room for AR button */
+    }
+    .zone-strip::-webkit-scrollbar { display: none; }
+    .zone-chip {
+      flex: 0 0 auto;
+      background: rgba(15, 23, 42, 0.84);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      color: #fff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.28);
+    }
+    .zone-chip.active {
+      background: #f59e0b;
+      color: #111827;
+      border-color: #f59e0b;
+    }
+
+    /* AR button styling */
+    .ar-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 7;
+      background: rgba(15, 23, 42, 0.90);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Bottom Villa Info Card */
+    .bottom-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      flex-shrink: 0;
+    }
+    .info-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .villa-name {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+    }
+    .villa-loc {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .price-pill {
+      flex-shrink: 0;
+      text-align: right;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: 10px;
+      padding: 4px 9px;
+      white-space: nowrap;
+    }
+    .price-main {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #6ee7b7;
+    }
+    .price-sub {
+      font-size: 10px;
+      color: #a7f3d0;
+    }
+    .info-desc {
+      margin: 6px 0 8px;
+      font-size: 11.8px;
+      color: #e2e8f0;
+      line-height: 1.38;
+    }
+    .info-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .hint {
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+    .btn-listing {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 9px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand-row">
+        <div class="brand-title">
+          <span>🏡 Capodanno 3D</span>
+          <span class="brand-badge">Draco GLB</span>
+        </div>
+        <div class="top-actions">
+          <button id="btnLabels" class="icon-btn active" type="button">Pin</button>
+          <button id="btnRotate" class="icon-btn" type="button">Ruota</button>
+        </div>
+      </div>
+      <div class="tabs" id="villaTabs"></div>
+    </header>
+
+    <main class="stage" id="stage">
+      <div class="cam-bar">
+        <button class="cam-btn active" data-orbit="38deg 58deg 88%" type="button">Vista 3D</button>
+        <button class="cam-btn" data-orbit="0deg 10deg 95%" type="button">Pianta</button>
+        <button class="cam-btn" data-orbit="0deg 74deg 86%" type="button">Fronte</button>
+      </div>
+
+      <model-viewer
+        id="mv"
+        src="models/villa1_monti.glb"
+        alt="Modello 3D Villa Capodanno"
+        camera-controls
+        touch-action="pan-y"
+        environment-image="neutral"
+        shadow-intensity="1.05"
+        exposure="1.06"
+        camera-orbit="38deg 58deg 88%"
+        min-camera-orbit="auto 8deg auto"
+        max-camera-orbit="auto 88deg auto"
+        interaction-prompt="auto"
+        ar
+        ar-modes="webxr scene-viewer quick-look">
+
+        <div class="progress-wrap" id="loader" slot="progress-bar">
+          <div class="spinner"></div>
+          <div style="font-size:12px;font-weight:700;">Caricamento modello 3D...</div>
+        </div>
+
+        <button slot="ar-button" class="ar-btn" type="button">📱 Vedi in AR</button>
+      </model-viewer>
+
+      <div class="zone-strip" id="zoneStrip"></div>
+    </main>
+
+    <footer class="bottom-card">
+      <div class="info-top">
+        <div>
+          <h1 class="villa-name" id="vName"></h1>
+          <div class="villa-loc" id="vLoc"></div>
+        </div>
+        <div class="price-pill">
+          <div class="price-main" id="vShare"></div>
+          <div class="price-sub" id="vTotal"></div>
+        </div>
+      </div>
+      <p class="info-desc" id="vDesc"></p>
+      <div class="info-foot">
+        <span class="hint">👆 1 dito: ruota · 2 dita: zoom / sposta</span>
+        <a id="vLink" class="btn-listing" href="#" target="_blank" rel="noopener noreferrer">Apri Annuncio ↗</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const VILLAS = [
+      {
+        id: "villa1_monti",
+        short: "1. Villa Monti",
+        name: "1. Villa Monti — Campagna Ceglie / Francavilla",
+        loc: "Totalmente isolata negli ulivi • 140 mq + veranda >50 mq",
+        share: "€ 28,24 / testa (25p)",
+        total: "€ 706 totali • 2 notti",
+        desc: "Favorita #1: campo da calcetto privato con illuminazione, veranda coperta >50 mq con forno a legna/BBQ, salone con soffitto in legno e camino.",
+        glb: "models/villa1_monti.glb",
+        url: "https://www.airbnb.it/rooms/1761475029076339258?adults=8&check_in=2026-12-31&check_out=2027-01-02",
+        hotspots: [
+          { id: "h1", num: "1", pos: "-7.8 1.5 0.5", orbit: "25deg 52deg 52%", label: "1. ⚽ Calcetto" },
+          { id: "h2", num: "2", pos: "1.5 3.1 1.6", orbit: "35deg 55deg 48%", label: "2. 🪵 Veranda 50mq" },
+          { id: "h3", num: "3", pos: "1.5 2.0 -5.2", orbit: "20deg 46deg 46%", label: "3. 🔥 Salone & Camino" }
+        ]
+      },
+      {
+        id: "villa2_marinezzi",
+        short: "2. Marinezzi",
+        name: "2. Villa Marinezzi — Pineta Isolata a Mesagne",
+        loc: "Contrada Marinezzi • Pineta privata zero vicini",
+        share: "€ 40,00 / testa (25p)",
+        total: "€ 1.000 totali • 2 notti",
+        desc: "Veranda attrezzata con biliardino e ping pong, doppio salone con stufa a pellet rossa + arco verso sala pranzo con tavolone e gazebo esterno.",
+        glb: "models/villa2_marinezzi.glb",
+        url: "https://www.airbnb.it/rooms/50685149?adults=8&check_in=2026-12-31&check_out=2027-01-02",
+        hotspots: [
+          { id: "h1", num: "1", pos: "-5.0 2.0 1.1", orbit: "28deg 52deg 48%", label: "1. 🎱 Biliardino & Ping Pong" },
+          { id: "h2", num: "2", pos: "-6.5 2.0 -5.2", orbit: "22deg 46deg 46%", label: "2. 🔥 Doppio Salone" },
+          { id: "h3", num: "3", pos: "0.5 2.0 -4.8", orbit: "18deg 48deg 48%", label: "3. 🍽️ Sala Pranzo" }
+        ]
+      },
+      {
+        id: "villa3_ceglie",
+        short: "3. Volte a Stella",
+        name: "3. Casa Volte a Stella & Camino — Ceglie",
+        loc: "Campagna di Ceglie Messapica • 100% intera casa esclusiva",
+        share: "€ 18,00 / testa (25p)",
+        total: "€ 450 (1 notte) • € 766–900 (2 notti)",
+        desc: "Best value a soli € 18/testa (1 notte): grandissimo salone a volte a stella in pietra con camino, grande corte esterna privata e piscina.",
+        glb: "models/villa3_ceglie.glb",
+        url: "https://www.airbnb.it/rooms/1769802850525255441?adults=10&check_in=2026-12-31&check_out=2027-01-01",
+        hotspots: [
+          { id: "h1", num: "1", pos: "-3.2 3.8 -4.2", orbit: "22deg 48deg 48%", label: "1. ⭐ Volte a Stella" },
+          { id: "h2", num: "2", pos: "-3.5 1.1 3.8", orbit: "32deg 52deg 50%", label: "2. 🪑 Corte Privata" },
+          { id: "h3", num: "3", pos: "6.8 0.8 4.2", orbit: "-25deg 52deg 48%", label: "3. 🏊 Piscina" }
+        ]
+      },
+      {
+        id: "villa4_cristian",
+        short: "4. Villa Cristian",
+        name: "4. Villa Cristian — Contrada Molillo, Ostuni",
+        loc: "Campagna di Ostuni • 200 mq + 5 camere + parcheggio 6+ auto",
+        share: "€ 36,08 / testa (25p)",
+        total: "€ 902 totali • 1 notte (canc. gratuita)",
+        desc: "Veranda esterna chiusa con teli trasparenti antivento/pioggia, divani e tavolini, ampio salone interno, cucina abitabile e parcheggio comodo.",
+        glb: "models/villa4_cristian.glb",
+        url: "https://www.booking.com/hotel/it/villa-cristian-ostuni.it.html?checkin=2026-12-31&checkout=2027-01-01&group_adults=10",
+        hotspots: [
+          { id: "h1", num: "1", pos: "-5.8 3.0 1.0", orbit: "30deg 58deg 48%", label: "1. 🪟 Veranda Chiusa" },
+          { id: "h2", num: "2", pos: "-6.5 1.0 6.2", orbit: "25deg 54deg 48%", label: "2. 🚗 Parcheggio" },
+          { id: "h3", num: "3", pos: "-3.5 2.0 -4.7", orbit: "18deg 46deg 50%", label: "3. 🏠 Salone & 5 Camere" }
+        ]
+      },
+      {
+        id: "villa5_harmony",
+        short: "5. Garden Harmony",
+        name: "5. Trulli Garden Harmony — Martina Franca",
+        loc: "Valle d'Itria • Tenuta rurale con trulli autentici",
+        share: "€ 28,00 / testa (25p)",
+        total: "€ 700 (1 notte) • € 984 (2 notti)",
+        desc: "Monumentale sala ad archi in tufo e pietra con camino (spostando i tavolini si ricava ottimo spazio) affiancata da 3 coni trullo originali.",
+        glb: "models/villa5_harmony.glb",
+        url: "https://www.airbnb.it/rooms/1040356842197891426?adults=9&check_in=2026-12-31&check_out=2027-01-01",
+        hotspots: [
+          { id: "h1", num: "1", pos: "-3.2 3.8 -3.2", orbit: "25deg 48deg 48%", label: "1. 🏛️ Sala ad Archi" },
+          { id: "h2", num: "2", pos: "5.8 5.2 -4.9", orbit: "-35deg 58deg 52%", label: "2. 🪨 Trulli" }
+        ]
+      },
+      {
+        id: "villa6_casablu",
+        short: "6. La Casa Blu",
+        name: "6. La Casa Blu — Antica Villa in Pietra, Ostuni",
+        loc: "Ostuni • Villa storica stile 'Castello'",
+        share: "€ 56,80 / testa (25p)",
+        total: "€ 1.420 totali • 2 notti",
+        desc: "Opzione extra scenografica: facciata blu cobalto e tufo a due piani con loggia-balcone, pergolato laterale e soggiorno a volte di 26,38 mq.",
+        glb: "models/villa6_casablu.glb",
+        url: "https://www.airbnb.it/rooms/24191709?adults=10&check_in=2026-12-31&check_out=2027-01-02",
+        hotspots: [
+          { id: "h1", num: "1", pos: "0.9 5.5 0.8", orbit: "16deg 70deg 54%", label: "1. 🏰 Castello" },
+          { id: "h2", num: "2", pos: "-2.0 3.0 -3.0", orbit: "165deg 44deg 48%", label: "2. 🛋️ Salone 26,38 mq" },
+          { id: "h3", num: "3", pos: "-8.0 2.8 0.0", orbit: "62deg 55deg 50%", label: "3. 🌿 Pergolato" }
+        ]
+      }
+    ];
+
+    const mv = document.getElementById("mv");
+    const loader = document.getElementById("loader");
+    const tabsEl = document.getElementById("villaTabs");
+    const zoneStrip = document.getElementById("zoneStrip");
+    const stageEl = document.getElementById("stage");
+    const btnLabels = document.getElementById("btnLabels");
+    const btnRotate = document.getElementById("btnRotate");
+
+    function resolveInitialIndex() {
+      const p = new URLSearchParams(window.location.search).get("casa");
+      if (!p) return 0;
+      const num = parseInt(p, 10);
+      if (!Number.isNaN(num) && num >= 1 && num <= VILLAS.length) return num - 1;
+      const found = VILLAS.findIndex(v => v.id === p || v.id.includes(p.toLowerCase()));
+      return found >= 0 ? found : 0;
+    }
+
+    function focusHotspot(hs, chipIdx) {
+      mv.cameraTarget = hs.pos;
+      mv.cameraOrbit = hs.orbit;
+      document.querySelectorAll(".zone-chip").forEach((c, i) => c.classList.toggle("active", i === chipIdx));
+      document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
+    }
+
+    function renderHotspots(villa) {
+      mv.querySelectorAll(".hotspot").forEach(el => el.remove());
+      zoneStrip.innerHTML = "";
+      villa.hotspots.forEach((hs, i) => {
+        const pin = document.createElement("button");
+        pin.className = "hotspot";
+        pin.type = "button";
+        pin.slot = "hotspot-" + hs.id;
+        pin.dataset.position = hs.pos;
+        pin.dataset.normal = "0 1 0";
+        pin.textContent = hs.num;
+        pin.addEventListener("click", () => focusHotspot(hs, i));
+        mv.appendChild(pin);
+
+        const chip = document.createElement("button");
+        chip.className = "zone-chip";
+        chip.type = "button";
+        chip.textContent = hs.label;
+        chip.addEventListener("click", () => focusHotspot(hs, i));
+        zoneStrip.appendChild(chip);
+      });
+    }
+
+    function selectVilla(idx, updateUrl = true) {
+      const v = VILLAS[idx];
+      loader.classList.remove("hide");
+      mv.cameraTarget = "auto";
+      mv.cameraOrbit = "38deg 58deg 88%";
+      mv.src = v.glb;
+      mv.alt = v.name;
+      renderHotspots(v);
+
+      document.querySelectorAll(".cam-btn").forEach((b, i) => b.classList.toggle("active", i === 0));
+      document.getElementById("vName").textContent = v.name;
+      document.getElementById("vLoc").textContent = v.loc;
+      document.getElementById("vShare").textContent = v.share;
+      document.getElementById("vTotal").textContent = v.total;
+      document.getElementById("vDesc").textContent = v.desc;
+      document.getElementById("vLink").href = v.url;
+
+      document.querySelectorAll(".tab").forEach((t, i) => {
+        t.classList.toggle("active", i === idx);
+        if (i === idx) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      });
+
+      if (updateUrl && history.replaceState) {
+        const u = new URL(window.location.href);
+        u.searchParams.set("casa", v.id);
+        history.replaceState(null, "", u.toString());
+      }
+    }
+
+    VILLAS.forEach((v, i) => {
+      const btn = document.createElement("button");
+      btn.className = "tab";
+      btn.type = "button";
+      btn.textContent = v.short;
+      btn.addEventListener("click", () => selectVilla(i));
+      tabsEl.appendChild(btn);
+    });
+
+    mv.addEventListener("load", () => loader.classList.add("hide"));
+
+    document.querySelectorAll(".cam-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".zone-chip").forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        mv.cameraTarget = "auto";
+        mv.cameraOrbit = btn.dataset.orbit;
+      });
+    });
+
+    btnLabels.addEventListener("click", () => {
+      const off = stageEl.classList.toggle("hide-hotspots");
+      btnLabels.classList.toggle("active", !off);
+    });
+
+    btnRotate.addEventListener("click", () => {
+      const active = btnRotate.classList.toggle("active");
+      if (active) mv.setAttribute("auto-rotate", "");
+      else mv.removeAttribute("auto-rotate");
+    });
+
+    selectVilla(resolveInitialIndex(), false);
+  </script>
+</body>
+</html>
