@@ -346,7 +346,7 @@
       <div class="brand-row">
         <div class="brand-title">
           <span>🏡 Capodanno 3D</span>
-          <span class="brand-badge">Draco GLB</span>
+          <span class="brand-badge">Scala 1:1 · 25 ospiti</span>
         </div>
         <div class="top-actions">
           <button id="btnLabels" class="icon-btn active" type="button">Pin</button>
@@ -359,6 +359,7 @@
     <main class="stage" id="stage">
       <div class="cam-bar">
         <button class="cam-btn active" data-orbit="38deg 58deg 88%" type="button">Vista 3D</button>
+        <button class="cam-btn" id="btnEnterSalone" data-mode="inside" type="button">🚪 Entra in Salone</button>
         <button class="cam-btn" data-orbit="0deg 10deg 95%" type="button">Pianta</button>
         <button class="cam-btn" data-orbit="0deg 74deg 86%" type="button">Fronte</button>
       </div>
@@ -372,8 +373,11 @@
         environment-image="neutral"
         shadow-intensity="1.05"
         exposure="1.06"
+        field-of-view="52deg"
+        min-field-of-view="30deg"
+        max-field-of-view="68deg"
         camera-orbit="38deg 58deg 88%"
-        min-camera-orbit="auto 8deg auto"
+        min-camera-orbit="auto 5deg 0.8m"
         max-camera-orbit="auto 88deg auto"
         interaction-prompt="auto"
         ar
@@ -415,95 +419,101 @@
         id: "villa1_monti",
         short: "1. Villa Monti",
         name: "1. Villa Monti — Campagna Ceglie / Francavilla",
-        loc: "Totalmente isolata negli ulivi • 140 mq + veranda >50 mq",
+        loc: "Totalmente isolata negli ulivi • 140 mq + veranda >50 mq • 25 ospiti 1:1",
         share: "€ 28,24 / testa (25p)",
         total: "€ 706 totali • 2 notti",
-        desc: "Favorita #1: campo da calcetto privato con illuminazione, veranda coperta >50 mq con forno a legna/BBQ, salone con soffitto in legno e camino.",
+        desc: "Favorita #1: salone arredato con 13 amici dentro (piastrelle 50cm), veranda coperta >50 mq con forno/BBQ e campo da calcetto 3v3 illuminato.",
         glb: "models/villa1_monti.glb",
         url: "https://www.airbnb.it/rooms/1761475029076339258?adults=8&check_in=2026-12-31&check_out=2027-01-02",
+        inside: { target: "1.5m 1.4m -6.2m", orbit: "4deg 78deg 4.6m", fov: "60deg" },
         hotspots: [
-          { id: "h1", num: "1", pos: "-7.8 1.5 0.5", orbit: "25deg 52deg 52%", label: "1. ⚽ Calcetto" },
-          { id: "h2", num: "2", pos: "1.5 3.1 1.6", orbit: "35deg 55deg 48%", label: "2. 🪵 Veranda 50mq" },
-          { id: "h3", num: "3", pos: "1.5 2.0 -5.2", orbit: "20deg 46deg 46%", label: "3. 🔥 Salone & Camino" }
+          { id: "h1", num: "1", pos: "-7.8m 0.8m 0.5m", orbit: "22deg 68deg 7.5m", label: "1. ⚽ Calcetto" },
+          { id: "h2", num: "2", pos: "1.5m 1.4m 1.6m", orbit: "25deg 74deg 5.5m", label: "2. 🪵 Veranda 50mq" },
+          { id: "h3", num: "3", pos: "1.5m 1.4m -6.2m", orbit: "4deg 78deg 4.6m", label: "3. 🔥 Salone & Camino" }
         ]
       },
       {
         id: "villa2_marinezzi",
         short: "2. Marinezzi",
         name: "2. Villa Marinezzi — Pineta Isolata a Mesagne",
-        loc: "Contrada Marinezzi • Pineta privata zero vicini",
+        loc: "Contrada Marinezzi • Pineta privata zero vicini • 25 ospiti 1:1",
         share: "€ 40,00 / testa (25p)",
         total: "€ 1.000 totali • 2 notti",
-        desc: "Veranda attrezzata con biliardino e ping pong, doppio salone con stufa a pellet rossa + arco verso sala pranzo con tavolone e gazebo esterno.",
+        desc: "Doppio salone con stufa a pellet rossa + arco verso sala pranzo con tavolone, veranda con biliardino & ping pong e gazebo in pineta.",
         glb: "models/villa2_marinezzi.glb",
         url: "https://www.airbnb.it/rooms/50685149?adults=8&check_in=2026-12-31&check_out=2027-01-02",
+        inside: { target: "-6.9m 1.4m -6.4m", orbit: "6deg 78deg 4.8m", fov: "60deg" },
         hotspots: [
-          { id: "h1", num: "1", pos: "-5.0 2.0 1.1", orbit: "28deg 52deg 48%", label: "1. 🎱 Biliardino & Ping Pong" },
-          { id: "h2", num: "2", pos: "-6.5 2.0 -5.2", orbit: "22deg 46deg 46%", label: "2. 🔥 Doppio Salone" },
-          { id: "h3", num: "3", pos: "0.5 2.0 -4.8", orbit: "18deg 48deg 48%", label: "3. 🍽️ Sala Pranzo" }
+          { id: "h1", num: "1", pos: "-5.0m 1.2m 1.1m", orbit: "22deg 68deg 6.0m", label: "1. 🎱 Biliardino & Ping Pong" },
+          { id: "h2", num: "2", pos: "-6.9m 1.4m -6.4m", orbit: "6deg 78deg 4.8m", label: "2. 🔥 Doppio Salone" },
+          { id: "h3", num: "3", pos: "0.5m 1.5m -5.6m", orbit: "4deg 78deg 4.6m", label: "3. 🍽️ Sala Pranzo" }
         ]
       },
       {
         id: "villa3_ceglie",
         short: "3. Volte a Stella",
         name: "3. Casa Volte a Stella & Camino — Ceglie",
-        loc: "Campagna di Ceglie Messapica • 100% intera casa esclusiva",
+        loc: "Campagna di Ceglie Messapica • 100% intera casa • 25 ospiti 1:1",
         share: "€ 18,00 / testa (25p)",
         total: "€ 450 (1 notte) • € 766–900 (2 notti)",
-        desc: "Best value a soli € 18/testa (1 notte): grandissimo salone a volte a stella in pietra con camino, grande corte esterna privata e piscina.",
+        desc: "Best value a € 18/testa (1 notte): ampio salone a volte a stella alto 3,6m con 18 ospiti che ballano, camino, DJ e corte esterna con piscina.",
         glb: "models/villa3_ceglie.glb",
         url: "https://www.airbnb.it/rooms/1769802850525255441?adults=10&check_in=2026-12-31&check_out=2027-01-01",
+        inside: { target: "-4.8m 1.5m -5.6m", orbit: "-12deg 74deg 5.0m", fov: "60deg" },
         hotspots: [
-          { id: "h1", num: "1", pos: "-3.2 3.8 -4.2", orbit: "22deg 48deg 48%", label: "1. ⭐ Volte a Stella" },
-          { id: "h2", num: "2", pos: "-3.5 1.1 3.8", orbit: "32deg 52deg 50%", label: "2. 🪑 Corte Privata" },
-          { id: "h3", num: "3", pos: "6.8 0.8 4.2", orbit: "-25deg 52deg 48%", label: "3. 🏊 Piscina" }
+          { id: "h1", num: "1", pos: "-4.8m 1.5m -5.6m", orbit: "-12deg 74deg 5.0m", label: "1. ⭐ Volte a Stella" },
+          { id: "h2", num: "2", pos: "-3.5m 1.1m 3.8m", orbit: "28deg 70deg 6.8m", label: "2. 🪑 Corte Privata" },
+          { id: "h3", num: "3", pos: "6.8m 0.8m 4.2m", orbit: "-25deg 65deg 7.2m", label: "3. 🏊 Piscina" }
         ]
       },
       {
         id: "villa4_cristian",
         short: "4. Villa Cristian",
         name: "4. Villa Cristian — Contrada Molillo, Ostuni",
-        loc: "Campagna di Ostuni • 200 mq + 5 camere + parcheggio 6+ auto",
+        loc: "Campagna di Ostuni • 200 mq + 5 camere + parcheggio • 25 ospiti 1:1",
         share: "€ 36,08 / testa (25p)",
         total: "€ 902 totali • 1 notte (canc. gratuita)",
-        desc: "Veranda esterna chiusa con teli trasparenti antivento/pioggia, divani e tavolini, ampio salone interno, cucina abitabile e parcheggio comodo.",
+        desc: "Veranda chiusa antivento con teli trasparenti + ampio salone interno con cucina abitabile, 5 camere e area parcheggio per 6+ auto.",
         glb: "models/villa4_cristian.glb",
         url: "https://www.booking.com/hotel/it/villa-cristian-ostuni.it.html?checkin=2026-12-31&checkout=2027-01-01&group_adults=10",
+        inside: { target: "-6.4m 1.4m -6.2m", orbit: "0deg 76deg 4.6m", fov: "60deg" },
         hotspots: [
-          { id: "h1", num: "1", pos: "-5.8 3.0 1.0", orbit: "30deg 58deg 48%", label: "1. 🪟 Veranda Chiusa" },
-          { id: "h2", num: "2", pos: "-6.5 1.0 6.2", orbit: "25deg 54deg 48%", label: "2. 🚗 Parcheggio" },
-          { id: "h3", num: "3", pos: "-3.5 2.0 -4.7", orbit: "18deg 46deg 50%", label: "3. 🏠 Salone & 5 Camere" }
+          { id: "h1", num: "1", pos: "-5.8m 1.4m 1.0m", orbit: "24deg 76deg 5.5m", label: "1. 🪟 Veranda Chiusa" },
+          { id: "h2", num: "2", pos: "-6.5m 1.0m 6.2m", orbit: "25deg 66deg 7.5m", label: "2. 🚗 Parcheggio" },
+          { id: "h3", num: "3", pos: "-6.4m 1.4m -6.2m", orbit: "0deg 76deg 4.6m", label: "3. 🏠 Salone & 5 Camere" }
         ]
       },
       {
         id: "villa5_harmony",
         short: "5. Garden Harmony",
         name: "5. Trulli Garden Harmony — Martina Franca",
-        loc: "Valle d'Itria • Tenuta rurale con trulli autentici",
+        loc: "Valle d'Itria • Tenuta rurale con 3 trulli • 25 ospiti 1:1",
         share: "€ 28,00 / testa (25p)",
         total: "€ 700 (1 notte) • € 984 (2 notti)",
-        desc: "Monumentale sala ad archi in tufo e pietra con camino (spostando i tavolini si ricava ottimo spazio) affiancata da 3 coni trullo originali.",
+        desc: "Monumentale sala ad archi in tufo e pietra con camino e nicchia rosa (18 ospiti dentro) affiancata da 3 coni trullo originali e patio.",
         glb: "models/villa5_harmony.glb",
         url: "https://www.airbnb.it/rooms/1040356842197891426?adults=9&check_in=2026-12-31&check_out=2027-01-01",
+        inside: { target: "-3.2m 1.7m -3.4m", orbit: "18deg 75deg 6.0m", fov: "58deg" },
         hotspots: [
-          { id: "h1", num: "1", pos: "-3.2 3.8 -3.2", orbit: "25deg 48deg 48%", label: "1. 🏛️ Sala ad Archi" },
-          { id: "h2", num: "2", pos: "5.8 5.2 -4.9", orbit: "-35deg 58deg 52%", label: "2. 🪨 Trulli" }
+          { id: "h1", num: "1", pos: "-3.2m 1.7m -3.4m", orbit: "18deg 75deg 6.0m", label: "1. 🏛️ Sala ad Archi" },
+          { id: "h2", num: "2", pos: "5.8m 3.0m -4.9m", orbit: "-35deg 64deg 8.5m", label: "2. 🪨 Trulli" }
         ]
       },
       {
         id: "villa6_casablu",
         short: "6. La Casa Blu",
         name: "6. La Casa Blu — Antica Villa in Pietra, Ostuni",
-        loc: "Ostuni • Villa storica stile 'Castello'",
+        loc: "Ostuni • Villa storica stile 'Castello' • 25 ospiti 1:1",
         share: "€ 56,80 / testa (25p)",
         total: "€ 1.420 totali • 2 notti",
-        desc: "Opzione extra scenografica: facciata blu cobalto e tufo a due piani con loggia-balcone, pergolato laterale e soggiorno a volte di 26,38 mq.",
+        desc: "Facciata blu e tufo a 2 piani con balcone e pergolato; il taglio posteriore mostra il salone reale da 26,38 mq con 14 amici dentro per valutare l'ingombro.",
         glb: "models/villa6_casablu.glb",
         url: "https://www.airbnb.it/rooms/24191709?adults=10&check_in=2026-12-31&check_out=2027-01-02",
+        inside: { target: "-2.0m 1.6m -3.0m", orbit: "162deg 72deg 5.2m", fov: "58deg" },
         hotspots: [
-          { id: "h1", num: "1", pos: "0.9 5.5 0.8", orbit: "16deg 70deg 54%", label: "1. 🏰 Castello" },
-          { id: "h2", num: "2", pos: "-2.0 3.0 -3.0", orbit: "165deg 44deg 48%", label: "2. 🛋️ Salone 26,38 mq" },
-          { id: "h3", num: "3", pos: "-8.0 2.8 0.0", orbit: "62deg 55deg 50%", label: "3. 🌿 Pergolato" }
+          { id: "h1", num: "1", pos: "0.9m 3.5m 0.8m", orbit: "16deg 72deg 8.5m", label: "1. 🏰 Castello" },
+          { id: "h2", num: "2", pos: "-2.0m 1.6m -3.0m", orbit: "162deg 72deg 5.2m", label: "2. 🛋️ Salone 26,38 mq" },
+          { id: "h3", num: "3", pos: "-8.0m 1.8m 0.0m", orbit: "62deg 68deg 7.0m", label: "3. 🌿 Pergolato" }
         ]
       }
     ];
@@ -515,6 +525,7 @@
     const stageEl = document.getElementById("stage");
     const btnLabels = document.getElementById("btnLabels");
     const btnRotate = document.getElementById("btnRotate");
+    let currentVilla = VILLAS[0];
 
     function resolveInitialIndex() {
       const p = new URLSearchParams(window.location.search).get("casa");
@@ -525,9 +536,17 @@
       return found >= 0 ? found : 0;
     }
 
+    function enterSalone(villa) {
+      if (!villa || !villa.inside) return;
+      mv.cameraTarget = villa.inside.target;
+      mv.cameraOrbit = villa.inside.orbit;
+      mv.fieldOfView = villa.inside.fov || "56deg";
+    }
+
     function focusHotspot(hs, chipIdx) {
       mv.cameraTarget = hs.pos;
       mv.cameraOrbit = hs.orbit;
+      mv.fieldOfView = "56deg";
       document.querySelectorAll(".zone-chip").forEach((c, i) => c.classList.toggle("active", i === chipIdx));
       document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
     }
@@ -557,9 +576,11 @@
 
     function selectVilla(idx, updateUrl = true) {
       const v = VILLAS[idx];
+      currentVilla = v;
       loader.classList.remove("hide");
       mv.cameraTarget = "auto";
       mv.cameraOrbit = "38deg 58deg 88%";
+      mv.fieldOfView = "52deg";
       mv.src = v.glb;
       mv.alt = v.name;
       renderHotspots(v);
@@ -600,8 +621,13 @@
         document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
         document.querySelectorAll(".zone-chip").forEach(c => c.classList.remove("active"));
         btn.classList.add("active");
-        mv.cameraTarget = "auto";
-        mv.cameraOrbit = btn.dataset.orbit;
+        if (btn.dataset.mode === "inside") {
+          enterSalone(currentVilla);
+        } else {
+          mv.cameraTarget = "auto";
+          mv.cameraOrbit = btn.dataset.orbit;
+          mv.fieldOfView = "52deg";
+        }
       });
     });
 
