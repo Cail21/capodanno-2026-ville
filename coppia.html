@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Capodanno Coppia 3D — Idromassaggio, Cucina & Case Calde (1:1)</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg: #111827;
+      --panel: rgba(17, 24, 39, 0.94);
+      --border: rgba(255, 255, 255, 0.14);
+      --accent: #f43f5e;
+      --accent-gold: #f59e0b;
+      --accent2: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+    .app {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100dvh;
+      height: 100vh;
+    }
+    .topbar {
+      position: relative;
+      z-index: 10;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 10px 8px;
+      flex-shrink: 0;
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(244, 63, 94, 0.20);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.48);
+    }
+    .top-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .icon-btn {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .icon-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: #e2e8f0;
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 800;
+    }
+
+    .stage {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: radial-gradient(circle at 50% 35%, #dbeafe 0%, #c7d9ec 55%, #9eb3cc 100%);
+    }
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      display: block;
+      --poster-color: transparent;
+    }
+    .cam-bar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      display: flex;
+      gap: 5px;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(8px);
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      max-width: calc(100vw - 16px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cam-bar::-webkit-scrollbar { display: none; }
+    .cam-btn {
+      background: transparent;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .cam-btn.active {
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+    }
+
+    .progress-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.70);
+      color: #fff;
+      gap: 10px;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .progress-wrap.hide { opacity: 0; }
+    .spinner {
+      width: 34px; height: 34px;
+      border: 3px solid rgba(255,255,255,0.25);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hotspot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.90);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.40);
+      cursor: pointer;
+      padding: 0;
+    }
+    .stage.hide-hotspots .hotspot { display: none !important; }
+
+    .zone-strip {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 6;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-right: 92px;
+    }
+    .zone-strip::-webkit-scrollbar { display: none; }
+    .zone-chip {
+      flex: 0 0 auto;
+      background: rgba(15, 23, 42, 0.84);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(244, 63, 94, 0.55);
+      color: #fff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.28);
+    }
+    .zone-chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .ar-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 7;
+      background: rgba(15, 23, 42, 0.90);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .bottom-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      flex-shrink: 0;
+    }
+    .info-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .villa-name {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+    }
+    .villa-loc {
+      margin-top: 2px;
+      font-size: 10.8px;
+      color: var(--muted);
+    }
+    .price-pill {
+      flex-shrink: 0;
+      text-align: right;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: 10px;
+      padding: 4px 9px;
+      white-space: nowrap;
+    }
+    .price-main {
+      font-size: 12px;
+      font-weight: 800;
+      color: #6ee7b7;
+    }
+    .price-sub {
+      font-size: 10px;
+      color: #fde68a;
+      font-weight: 700;
+    }
+    .info-desc {
+      margin: 6px 0 8px;
+      font-size: 11.5px;
+      color: #e2e8f0;
+      line-height: 1.38;
+    }
+    .info-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .hint {
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+    .btn-listing {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 9px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand-row">
+        <div class="brand-title">
+          <span>💑 Coppia 3D</span>
+          <span class="brand-badge">Idro · Cucina · Calda</span>
+        </div>
+        <div class="top-actions">
+          <button id="btnLabels" class="icon-btn active" type="button">Pin</button>
+          <button id="btnRotate" class="icon-btn" type="button">Ruota</button>
+        </div>
+      </div>
+      <div class="tabs" id="villaTabs"></div>
+    </header>
+
+    <main class="stage" id="stage">
+      <div class="cam-bar">
+        <button class="cam-btn active" data-orbit="34deg 54deg 86%" type="button">Vista 3D</button>
+        <button class="cam-btn" id="btnEnterSuite" data-mode="inside" type="button">🚪 Entra in Suite</button>
+        <button class="cam-btn" data-orbit="0deg 12deg 92%" type="button">Pianta</button>
+        <button class="cam-btn" data-orbit="0deg 72deg 84%" type="button">Fronte</button>
+      </div>
+
+      <model-viewer
+        id="mv"
+        src="models_coppia/coppia1_mavi.glb"
+        alt="Modello 3D Suite Coppia"
+        camera-controls
+        touch-action="pan-y"
+        environment-image="neutral"
+        shadow-intensity="1.05"
+        exposure="1.06"
+        field-of-view="54deg"
+        min-field-of-view="30deg"
+        max-field-of-view="68deg"
+        camera-orbit="34deg 54deg 86%"
+        min-camera-orbit="auto 5deg 0.8m"
+        max-camera-orbit="auto 88deg auto"
+        interaction-prompt="auto"
+        ar
+        ar-modes="webxr scene-viewer quick-look">
+
+        <div class="progress-wrap" id="loader" slot="progress-bar">
+          <div class="spinner"></div>
+          <div style="font-size:12px;font-weight:700;">Caricamento suite 3D...</div>
+        </div>
+
+        <button slot="ar-button" class="ar-btn" type="button">📱 Vedi in AR</button>
+      </model-viewer>
+
+      <div class="zone-strip" id="zoneStrip"></div>
+    </main>
+
+    <footer class="bottom-card">
+      <div class="info-top">
+        <div>
+          <h1 class="villa-name" id="vName"></h1>
+          <div class="villa-loc" id="vLoc"></div>
+        </div>
+        <div class="price-pill">
+          <div class="price-main" id="vShare"></div>
+          <div class="price-sub" id="vTotal"></div>
+        </div>
+      </div>
+      <p class="info-desc" id="vDesc"></p>
+      <div class="info-foot">
+        <span class="hint">👆 1 dito: ruota · 2 dita: zoom / sposta</span>
+        <a id="vLink" class="btn-listing" href="#" target="_blank" rel="noopener noreferrer">Apri Annuncio ↗</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const SUITES = [
+      {
+        id: "coppia1_mavi",
+        short: "1. Suite Mavì (€101)",
+        name: "1. Suite Mavì con Idromassaggio — Ostuni (35 mq)",
+        loc: "Ostuni • Booking.com • Clima inverter + riscaldamento autonomo",
+        share: "Capodanno: € 101 (€50,50/p)",
+        total: "Feriale: € 64 (-37%)",
+        desc: "Più economica sia a Capodanno (€ 101) che in feriale (€ 64): vasca idromassaggio 2p sotto volte in pietra, cucina 4 fuochi a gas + forno e bagno teal.",
+        glb: "models_coppia/coppia1_mavi.glb",
+        url: "https://www.booking.com/hotel/it/suite-mavi-con-idromassaggio-by-wonderful-italy.it.html",
+        inside: { target: "0.4m 1.3m -0.4m", orbit: "32deg 70deg 4.6m", fov: "60deg" },
+        hotspots: [
+          { id: "h1", num: "1", pos: "2.25m 0.8m -1.4m", orbit: "28deg 65deg 3.6m", label: "1. 🛁 Idromassaggio" },
+          { id: "h2", num: "2", pos: "2.2m 1.0m 0.85m", orbit: "38deg 68deg 3.8m", label: "2. 🍳 Cucina 4 Fuochi" },
+          { id: "h3", num: "3", pos: "0.25m 1.0m -1.35m", orbit: "18deg 72deg 4.2m", label: "3. 🔥 Letto & Clima" }
+        ]
+      },
+      {
+        id: "coppia2_messapi",
+        short: "2. I Messapi (€126/€92)",
+        name: "2. Dimore i Messapi Suite ITRIA — Ceglie (30 mq)",
+        loc: "Ceglie Messapica • Booking (€126 Cap.) / Airbnb (€92 Fer.)",
+        share: "Capodanno: € 126 (€63/p)",
+        total: "Feriale Airbnb: € 92 (-27%)",
+        desc: "Idromassaggio blu illuminato incassato sotto arco in pietra viva accanto al letto in muratura, penisola cucina completa e aria condizionata calda.",
+        glb: "models_coppia/coppia2_messapi.glb",
+        url: "https://www.booking.com/hotel/it/dimore-i-messapi.it.html",
+        inside: { target: "-0.2m 1.1m -0.5m", orbit: "8deg 56deg 4.9m", fov: "60deg" },
+        hotspots: [
+          { id: "h1", num: "1", pos: "-1.7m 0.8m -1.45m", orbit: "24deg 68deg 3.6m", label: "1. 🛁 Idro in Pietra" },
+          { id: "h2", num: "2", pos: "-1.4m 1.0m 0.8m", orbit: "22deg 68deg 3.8m", label: "2. 🍳 Penisola Cucina" },
+          { id: "h3", num: "3", pos: "1.15m 1.0m -1.25m", orbit: "12deg 72deg 4.0m", label: "3. 🔥 Letto & Pompa Calore" }
+        ]
+      },
+      {
+        id: "coppia3_pietra",
+        short: "3. Pietra Ostuni (€126)",
+        name: "3. Pietra d' Ostuni — Casa Vacanze (50 mq)",
+        loc: "Ostuni • Booking.com • Zero sovrapprezzo a Capodanno!",
+        share: "Capodanno: € 126 (€63/p)",
+        total: "Feriale: € 126 (0% rincaro)",
+        desc: "La più spaziosa (50 mq!): soggiorno separato con cucina a induzione e divano, camera matrimoniale + sala benessere dedicata con grande vasca idro angolare.",
+        glb: "models_coppia/coppia3_pietra.glb",
+        url: "https://www.booking.com/hotel/it/pietra-d-ostuni.it.html",
+        inside: { target: "0.2m 1.1m -0.2m", orbit: "8deg 54deg 5.8m", fov: "60deg" },
+        hotspots: [
+          { id: "h1", num: "1", pos: "2.65m 0.9m -1.75m", orbit: "26deg 68deg 3.8m", label: "1. 🛁 Sala Idromassaggio" },
+          { id: "h2", num: "2", pos: "-2.2m 1.0m 1.4m", orbit: "24deg 68deg 4.2m", label: "2. 🍳 Cucina Induzione" },
+          { id: "h3", num: "3", pos: "-1.45m 1.0m -1.75m", orbit: "18deg 70deg 4.2m", label: "3. 🛏️ Camera & Clima" }
+        ]
+      },
+      {
+        id: "coppia4_nino",
+        short: "4. Suite Nino (€130/€69)",
+        name: "4. Alloggio Turistico Suite Nino — Ceglie (35 mq)",
+        loc: "Ceglie Messapica • Booking.com • Volte a stella in tufo",
+        share: "Capodanno: € 130 (€65/p)",
+        total: "Feriale: € 69 (-47%!)",
+        desc: "Super risparmio in giorno feriale (-47%, solo € 34,50 a testa!): vasca idro rialzata ai piedi del letto, cucina a induzione + microonde e clima caldo.",
+        glb: "models_coppia/coppia4_nino.glb",
+        url: "https://www.booking.com/hotel/it/alloggio-turistico-suite-nino.it.html",
+        inside: { target: "0.0m 1.2m -0.3m", orbit: "26deg 70deg 4.6m", fov: "60deg" },
+        hotspots: [
+          { id: "h1", num: "1", pos: "0.15m 1.0m -0.9m", orbit: "24deg 68deg 3.8m", label: "1. 🛁 Idro su Pedana" },
+          { id: "h2", num: "2", pos: "2.2m 1.0m 0.35m", orbit: "-35deg 68deg 3.8m", label: "2. 🍳 Cucina Induzione" },
+          { id: "h3", num: "3", pos: "-1.8m 1.1m -0.85m", orbit: "32deg 70deg 4.2m", label: "3. ⭐ Volte & Clima" }
+        ]
+      },
+      {
+        id: "coppia5_alfieri",
+        short: "5. Alfieri (€134/€109)",
+        name: "5. Dimora Alfieri — Cisternino (36 mq)",
+        loc: "Cisternino • Airbnb • Termosifone + Camino + Pompa calore",
+        share: "Capodanno: € 134 (€67/p)",
+        total: "Feriale: € 109 (-19%)",
+        desc: "Caldissima con termosifone alto a parete, camino in pietra e clima: letto ad alcova, vasca idromassaggio con LED e cucina completa con fornelli.",
+        glb: "models_coppia/coppia5_alfieri.glb",
+        url: "https://www.airbnb.it/rooms/887667981327096881",
+        inside: { target: "0.2m 1.2m -0.2m", orbit: "24deg 68deg 4.8m", fov: "60deg" },
+        hotspots: [
+          { id: "h1", num: "1", pos: "-0.15m 0.9m -1.72m", orbit: "16deg 68deg 3.8m", label: "1. 🛁 Alcova Idro LED" },
+          { id: "h2", num: "2", pos: "2.2m 1.2m -1.2m", orbit: "12deg 70deg 4.0m", label: "2. 🔥 Termosifone & Camino" },
+          { id: "h3", num: "3", pos: "-2.2m 1.0m 0.5m", orbit: "28deg 68deg 4.2m", label: "3. 🍳 Cucina & Letto" }
+        ]
+      },
+      {
+        id: "coppia6_sanrocco",
+        short: "6. San Rocco (€114,50/n)",
+        name: "6. Suite San Rocco — Ceglie Messapica (42 mq)",
+        loc: "Ceglie Messapica • Airbnb • Min. 2 notti Capodanno (€229 tot.)",
+        share: "Capodanno: € 114,50/n (x2)",
+        total: "Feriale 1 notte: € 82 (-28%)",
+        desc: "Due sale in tufo collegate: camera + cucina vera a 2 fuochi con tavolo e clima caldo + spettacolare sala spa privata con mini-piscina riscaldata e cascata.",
+        glb: "models_coppia/coppia6_sanrocco.glb",
+        url: "https://www.airbnb.it/rooms/1421666854992061150",
+        inside: { target: "0.2m 1.2m -0.3m", orbit: "28deg 66deg 5.2m", fov: "60deg" },
+        hotspots: [
+          { id: "h1", num: "1", pos: "2.05m 0.8m -0.95m", orbit: "24deg 66deg 4.2m", label: "1. 🌊 Mini-Piscina Spa" },
+          { id: "h2", num: "2", pos: "-2.6m 1.0m 0.85m", orbit: "26deg 68deg 4.0m", label: "2. 🍳 Cucina 2 Fuochi" },
+          { id: "h3", num: "3", pos: "-1.9m 1.0m -1.45m", orbit: "18deg 70deg 4.2m", label: "3. 🔥 Camera & Clima" }
+        ]
+      }
+    ];
+
+    const mv = document.getElementById("mv");
+    const loader = document.getElementById("loader");
+    const tabsEl = document.getElementById("villaTabs");
+    const zoneStrip = document.getElementById("zoneStrip");
+    const stageEl = document.getElementById("stage");
+    const btnLabels = document.getElementById("btnLabels");
+    const btnRotate = document.getElementById("btnRotate");
+    let currentSuite = SUITES[0];
+
+    function resolveInitialIndex() {
+      const p = new URLSearchParams(window.location.search).get("casa");
+      if (!p) return 0;
+      const num = parseInt(p, 10);
+      if (!Number.isNaN(num) && num >= 1 && num <= SUITES.length) return num - 1;
+      const found = SUITES.findIndex(v => v.id === p || v.id.includes(p.toLowerCase()));
+      return found >= 0 ? found : 0;
+    }
+
+    function enterSuite(suite) {
+      if (!suite || !suite.inside) return;
+      mv.cameraTarget = suite.inside.target;
+      mv.cameraOrbit = suite.inside.orbit;
+      mv.fieldOfView = suite.inside.fov || "58deg";
+    }
+
+    function focusHotspot(hs, chipIdx) {
+      mv.cameraTarget = hs.pos;
+      mv.cameraOrbit = hs.orbit;
+      mv.fieldOfView = "58deg";
+      document.querySelectorAll(".zone-chip").forEach((c, i) => c.classList.toggle("active", i === chipIdx));
+      document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
+    }
+
+    function renderHotspots(suite) {
+      mv.querySelectorAll(".hotspot").forEach(el => el.remove());
+      zoneStrip.innerHTML = "";
+      suite.hotspots.forEach((hs, i) => {
+        const pin = document.createElement("button");
+        pin.className = "hotspot";
+        pin.type = "button";
+        pin.slot = "hotspot-" + hs.id;
+        pin.dataset.position = hs.pos;
+        pin.dataset.normal = "0 1 0";
+        pin.textContent = hs.num;
+        pin.addEventListener("click", () => focusHotspot(hs, i));
+        mv.appendChild(pin);
+
+        const chip = document.createElement("button");
+        chip.className = "zone-chip";
+        chip.type = "button";
+        chip.textContent = hs.label;
+        chip.addEventListener("click", () => focusHotspot(hs, i));
+        zoneStrip.appendChild(chip);
+      });
+    }
+
+    function selectSuite(idx, updateUrl = true) {
+      const v = SUITES[idx];
+      currentSuite = v;
+      loader.classList.remove("hide");
+      mv.cameraTarget = "auto";
+      mv.cameraOrbit = "34deg 54deg 86%";
+      mv.fieldOfView = "54deg";
+      mv.src = v.glb;
+      mv.alt = v.name;
+      renderHotspots(v);
+
+      document.querySelectorAll(".cam-btn").forEach((b, i) => b.classList.toggle("active", i === 0));
+      document.getElementById("vName").textContent = v.name;
+      document.getElementById("vLoc").textContent = v.loc;
+      document.getElementById("vShare").textContent = v.share;
+      document.getElementById("vTotal").textContent = v.total;
+      document.getElementById("vDesc").textContent = v.desc;
+      document.getElementById("vLink").href = v.url;
+
+      document.querySelectorAll(".tab").forEach((t, i) => {
+        t.classList.toggle("active", i === idx);
+        if (i === idx) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      });
+
+      if (updateUrl && history.replaceState) {
+        const u = new URL(window.location.href);
+        u.searchParams.set("casa", v.id);
+        history.replaceState(null, "", u.toString());
+      }
+    }
+
+    SUITES.forEach((v, i) => {
+      const btn = document.createElement("button");
+      btn.className = "tab";
+      btn.type = "button";
+      btn.textContent = v.short;
+      btn.addEventListener("click", () => selectSuite(i));
+      tabsEl.appendChild(btn);
+    });
+
+    mv.addEventListener("load", () => loader.classList.add("hide"));
+
+    document.querySelectorAll(".cam-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".zone-chip").forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        if (btn.dataset.mode === "inside") {
+          enterSuite(currentSuite);
+        } else {
+          mv.cameraTarget = "auto";
+          mv.cameraOrbit = btn.dataset.orbit;
+          mv.fieldOfView = "54deg";
+        }
+      });
+    });
+
+    btnLabels.addEventListener("click", () => {
+      const off = stageEl.classList.toggle("hide-hotspots");
+      btnLabels.classList.toggle("active", !off);
+    });
+
+    btnRotate.addEventListener("click", () => {
+      const active = btnRotate.classList.toggle("active");
+      if (active) mv.setAttribute("auto-rotate", "");
+      else mv.removeAttribute("auto-rotate");
+    });
+
+    selectSuite(resolveInitialIndex(), false);
+  </script>
+</body>
+</html>
